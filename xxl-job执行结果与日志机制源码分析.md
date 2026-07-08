@@ -21,7 +21,7 @@
 - [四、控制台查询日志接口](#四控制台查询日志接口)
   - [4.1 接口总览](#41-接口总览)
   - [4.2 调度日志列表查询 `/joblog/pageList`](#42-调度日志列表查询-joblogpagelist)
-  - [4.3 实时日志详情查询 `/joblog/logDetailCat`](#43-实时日志详情查询-jobloglogdetailcat)
+  - [4.3 实时日志详情查询](#43-实时日志详情查询)
   - [4.4 执行结果回调接口 `/api/callback`](#44-执行结果回调接口-apicallback)
   - [4.5 控制台查询日志时序图](#45-控制台查询日志时序图)
 - [五、完整流程图](#五完整流程图)
@@ -739,7 +739,7 @@ switch (uri) {
 
 控制台查询日志分两类：
 - **调度日志列表**（分页）：从 `xxl_job_log` 表查询，返回结构化调度记录
-- **执行日志详情**（实时滚动）：通过调度中心转发，HTTP 调用执行器 `/log` 接口拉取文本日志
+- **执行日志详情**（实时滚动）：分两步——先请求 `/joblog/logDetailPage` 渲染空壳页面，页面内 JS 再轮询 `/joblog/logDetailCat`，由调度中心转发 HTTP 调用执行器 `/log` 接口拉取文本日志（详见 [4.3](#43-实时日志详情查询)）
 
 ### 4.1 接口总览
 
@@ -844,9 +844,106 @@ public Map<String, Object> pageList(HttpServletRequest request,
 </select>
 ```
 
-### 4.3 实时日志详情查询 `/joblog/logDetailCat`
+### 4.3 实时日志详情查询
 
-这是**控制台查询执行日志的核心接口**，实时从执行器拉取日志文件内容。
+这是**控制台查询执行日志的核心流程**，采用「页面入口 + 数据轮询」两步机制：前端先请求 `/joblog/logDetailPage` 渲染一个空壳页面，页面加载后由其内嵌 JS（`joblog.detail.1.js`）通过 AJAX 轮询 `/joblog/logDetailCat` 实时拉取日志。需要强调的是，`/joblog/logDetailCat` 的真正调用方是**详情页前端 JS**，而非后端之间互相调用。
+
+#### 4.3.1 页面入口 `/joblog/logDetailPage`
+
+调度日志列表中点击「执行日志」按钮，打开新窗口请求该接口。它只从 DB 读取三个字段塞入 Model，渲染出 `joblog/joblog.detail` 视图（空壳页面），**不读取日志内容**。
+
+> 文件：`xxl-job-admin/src/main/resources/static/js/joblog.index.1.js:258-263`
+
+```javascript
+// logDetail look
+$('#joblog_list').on('click', '.logDetail', function(){
+    var _id = $(this).attr('_id');
+    window.open(base_url + '/joblog/logDetailPage?id=' + _id);
+    return;
+});
+```
+
+> 文件：`xxl-job-admin/src/main/java/com/xxl/job/admin/controller/JobLogController.java:120-134`
+
+```java
+@RequestMapping("/logDetailPage")
+public String logDetailPage(int id, Model model){
+    // base check
+    ReturnT<String> logStatue = ReturnT.SUCCESS;
+    XxlJobLog jobLog = xxlJobLogDao.load(id);
+    if (jobLog == null) {
+        throw new RuntimeException(I18nUtil.getString("joblog_logid_unvalid"));
+    }
+
+    model.addAttribute("triggerCode", jobLog.getTriggerCode());
+    model.addAttribute("handleCode", jobLog.getHandleCode());
+    model.addAttribute("logId", jobLog.getId());
+    return "joblog/joblog.detail";   // 渲染空壳页面，只注入 logId/triggerCode/handleCode
+}
+```
+
+#### 4.3.2 日志内容拉取 `/joblog/logDetailCat`
+
+空壳页面加载后执行 `joblog.detail.1.js`，由该前端 JS 通过 AJAX 调用 `/joblog/logDetailCat`。任务运行期间每 3 秒轮询一次，通过 `fromLineNum` 游标增量追加日志，直到满足终止条件。
+
+> 文件：`xxl-job-admin/src/main/resources/static/js/joblog.detail.1.js:11-87`
+
+```javascript
+var fromLineNum = 1;    // [from, to], start as 1
+var pullFailCount = 0;
+function pullLog() {
+    if (pullFailCount++ > 20) {                 // 连续失败超 20 次，停止轮询
+        logRunStop('<span style="color: red;">'+ I18n.joblog_rolling_log_failoften +'</span>');
+        return;
+    }
+
+    $.ajax({
+        type : 'POST',
+        async: false,                            // 同步，保证日志顺序
+        url : base_url + '/joblog/logDetailCat',
+        data : { "logId":logId, "fromLineNum":fromLineNum },
+        dataType : "json",
+        success : function(data){
+            if (data.code == 200) {
+                if (fromLineNum > data.content.toLineNum) {     // 无新日志
+                    if (data.content.end) {                       // 已到末尾
+                        logRunStop('<br><span style="color: green;">[Rolling Log Finish]</span>');
+                        return;
+                    }
+                    return;
+                }
+                fromLineNum = data.content.toLineNum + 1;        // 推进游标，滚动加载
+                $('#logConsole').append(data.content.logContent);
+                pullFailCount = 0;
+            }
+        }
+    });
+}
+
+pullLog();                                       // 首次拉取
+
+if (handleCode > 0) {                            // 任务已回调结束，直接停止
+    logRunStop('<br><span style="color: green;">[Load Log Finish]</span>');
+    return;
+}
+
+var logRun = setInterval(function () {            // 每 3 秒轮询，直到结束
+    pullLog()
+}, 3000);
+```
+
+**轮询终止条件：**
+
+| 条件 | 触发位置 | 说明 |
+|------|----------|------|
+| `data.content.end == true` | `joblog.detail.1.js:48` | 已到日志末尾，标记 `[Rolling Log Finish]` |
+| `handleCode > 0` | `joblog.detail.1.js:74` | 任务已回调结束（成功/失败/超时），标记 `[Load Log Finish]` |
+| `pullFailCount > 20` | `joblog.detail.1.js:15` | 连续请求失败超 20 次，标记失败 |
+| `triggerCode != 200` | `joblog.detail.1.js:4` | 触发失败，不进入轮询，直接展示失败提示 |
+
+**滚动加载原理：** 前端以 `fromLineNum` 为游标，每次请求返回 `[fromLineNum, toLineNum]` 区间内容，下次请求 `fromLineNum = toLineNum + 1` 推进游标，实现日志按行增量追加。
+
+服务端 `/joblog/logDetailCat` 实现：
 
 > 文件：`xxl-job-admin/src/main/java/com/xxl/job/admin/controller/JobLogController.java:136-162`
 
@@ -866,9 +963,9 @@ public ReturnT<LogResult> logDetailCat(long logId, int fromLineNum){
         // 3. 远程调用执行器 /log 接口拉取日志
         ReturnT<LogResult> logResult = executorBiz.log(new LogParam(jobLog.getTriggerTime().getTime(), logId, fromLineNum));
 
-        // 4. 判断是否已到日志末尾
+        // 4. 判断是否已到日志末尾：无新日志 + 任务已结束 => end=true
         if (logResult.getContent()!=null && logResult.getContent().getFromLineNum() > logResult.getContent().getToLineNum()) {
-            if (jobLog.getHandleCode() > 0) {     // 任务已结束 + 无新日志 => 已到末尾
+            if (jobLog.getHandleCode() > 0) {
                 logResult.getContent().setEnd(true);
             }
         }
@@ -915,7 +1012,7 @@ public ReturnT<LogResult> log(LogParam logParam) {
 
 执行器端 `EmbedServer` 收到 `/log` 请求后路由到 `ExecutorBizImpl.log()`（见 [3.4 日志读取接口](#34-日志读取接口)）。
 
-**注意：** 日志**不落库**，每次前端查询都实时从执行器拉取最新内容。前端通过滚动增加 `fromLineNum` 实现日志滚动加载，直到 `end=true`。
+**注意：** 日志**不落库**，前端每次轮询都实时从执行器拉取最新内容。`end` 标志由调度中心综合「无新日志（`fromLineNum > toLineNum`）+ `handleCode>0`（任务已结束）」判定（`JobLogController.java:151-154`），前端据此停止轮询；任务运行期间则每 3 秒持续滚动追加，直到上述终止条件之一成立。
 
 ### 4.4 执行结果回调接口 `/api/callback`
 
@@ -972,7 +1069,8 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant UI as 控制台前端
+    participant List as 调度日志列表页(joblog.index.js)
+    participant Page as 日志详情页(joblog.detail.js)
     participant Ctrl as JobLogController(调度中心)
     participant DAO as XxlJobLogDao(调度中心)
     participant Sch as XxlJobScheduler(调度中心)
@@ -982,28 +1080,39 @@ sequenceDiagram
     participant FA as XxlJobFileAppender(执行器)
     participant File as 日志文件
 
-    UI->>Ctrl: GET /joblog/logDetailCat?logId=123&fromLineNum=0
-    Ctrl->>DAO: load(logId)
-    DAO-->>Ctrl: XxlJobLog (含 executorAddress, triggerTime)
-    Ctrl->>Sch: getExecutorBiz(executorAddress)
-    Sch-->>Ctrl: ExecutorBizClient
-    Ctrl->>Client: log(LogParam(triggerTime, logId, fromLineNum))
-    Client->>ES: POST /log (JSON)
-    ES->>ES: 解析 uri=/log → 路由
-    ES->>Biz: executorBiz.log(logParam)
-    Biz->>FA: makeLogFileName(triggerDate, logId)
-    FA-->>Biz: logPath/yyyy-MM-dd/{logId}.log
-    Biz->>FA: readLog(logFileName, fromLineNum)
-    FA->>File: LineNumberReader 逐行读取
-    File-->>FA: 行内容
-    FA-->>Biz: LogResult(fromLineNum, toLineNum, content, false)
-    Biz-->>ES: ReturnT<LogResult>
-    ES-->>Client: HTTP Response
-    Client-->>Ctrl: ReturnT<LogResult>
-    Ctrl->>Ctrl: 判断 end (fromLineNum > toLineNum 且 handleCode>0)
-    Ctrl-->>UI: ReturnT<LogResult>
+    List->>Ctrl: 点击执行日志 GET /joblog/logDetailPage?id=123
+    Ctrl->>DAO: load(id)
+    DAO-->>Ctrl: XxlJobLog
+    Ctrl-->>Page: 渲染 joblog.detail 空壳页面(logId/triggerCode/handleCode)
 
-    Note over UI: 前端滚动加载：fromLineNum=toLineNum+1<br/>直到 end=true
+    Note over Page: 页面加载执行 joblog.detail.js<br/>triggerCode 不为 200 时直接失败, handleCode 大于 0 时直接结束, 否则进入轮询
+
+    Page->>Page: pullLog() 首次拉取
+    loop 每3秒轮询(setInterval) 直到结束
+        Page->>Ctrl: POST /joblog/logDetailCat?logId=123&fromLineNum=N
+        Ctrl->>DAO: load(logId)
+        DAO-->>Ctrl: XxlJobLog(含 executorAddress, triggerTime)
+        Ctrl->>Sch: getExecutorBiz(executorAddress)
+        Sch-->>Ctrl: ExecutorBizClient
+        Ctrl->>Client: log(LogParam(triggerTime, logId, fromLineNum))
+        Client->>ES: POST /log(JSON)
+        ES->>ES: 解析 uri=/log 路由
+        ES->>Biz: executorBiz.log(logParam)
+        Biz->>FA: makeLogFileName(triggerDate, logId)
+        FA-->>Biz: logPath/yyyy-MM-dd/logId.log
+        Biz->>FA: readLog(logFileName, fromLineNum)
+        FA->>File: LineNumberReader 逐行读取
+        File-->>FA: 行内容
+        FA-->>Biz: LogResult(fromLineNum, toLineNum, content, false)
+        Biz-->>ES: ReturnT<LogResult>
+        ES-->>Client: HTTP Response
+        Client-->>Ctrl: ReturnT<LogResult>
+        Ctrl->>Ctrl: 判断 end(fromLineNum > toLineNum 且 handleCode > 0)
+        Ctrl-->>Page: ReturnT<LogResult>
+        Page->>Page: fromLineNum=toLineNum+1 追加日志
+    end
+
+    Page->>Page: clearInterval 停止轮询
 ```
 
 ---
@@ -1069,7 +1178,9 @@ flowchart TD
     end
 
     subgraph 查询阶段
-        H1[前端 logDetailCat] --> I1[JobLogController.logDetailCat]
+        H0[点击执行日志<br/>GET /joblog/logDetailPage] --> H0a[渲染 joblog.detail 空壳页面<br/>注入 logId/triggerCode/handleCode]
+        H0a --> H1[详情页 JS 轮询<br/>POST /joblog/logDetailCat 每3秒]
+        H1 --> I1[JobLogController.logDetailCat]
         I1 --> J1[xxlJobLogDao.load<br/>获取 executorAddress]
         J1 --> K1[getExecutorBiz]
         K1 --> L1[ExecutorBizClient.log<br/>POST /log]
@@ -1078,8 +1189,9 @@ flowchart TD
         N1 --> O1[makeLogFileName<br/>重建文件路径]
         O1 --> P1[readLog<br/>LineNumberReader]
         P1 --> Q1[LogResult 返回]
-        Q1 --> R1[判断 end 标志]
+        Q1 --> R1[判断 end 标志<br/>无新日志 且 handleCode 大于 0]
         R1 --> S1[返回前端]
+        S1 --> S2[fromLineNum=toLineNum+1<br/>滚动追加 直到 end]
     end
 ```
 
