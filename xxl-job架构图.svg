@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1480" height="1080" viewBox="0 0 1480 1080" font-family="'PingFang SC','Microsoft YaHei','Helvetica Neue',Arial,sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6f9fd"/>
+      <stop offset="1" stop-color="#e9eff7"/>
+    </linearGradient>
+    <linearGradient id="adminH" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3b6fb5"/><stop offset="1" stop-color="#4a82cc"/>
+    </linearGradient>
+    <linearGradient id="execH" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2f9e6b"/><stop offset="1" stop-color="#3bb380"/>
+    </linearGradient>
+    <linearGradient id="dbH" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#c98a2b"/><stop offset="1" stop-color="#dba045"/>
+    </linearGradient>
+    <filter id="shadow" x="-6%" y="-6%" width="112%" height="118%">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#566b85" flood-opacity="0.16"/>
+    </filter>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#566b85" flood-opacity="0.12"/>
+    </filter>
+    <marker id="ar-green" viewBox="0 0 11 11" refX="10" refY="5.5" markerWidth="11" markerHeight="11" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L11,5.5 L0,11 Z" fill="#2f9e6b"/></marker>
+    <marker id="ar-blue" viewBox="0 0 11 11" refX="10" refY="5.5" markerWidth="11" markerHeight="11" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L11,5.5 L0,11 Z" fill="#3b6fb5"/></marker>
+    <marker id="ar-orange" viewBox="0 0 11 11" refX="10" refY="5.5" markerWidth="11" markerHeight="11" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L11,5.5 L0,11 Z" fill="#d97757"/></marker>
+    <marker id="ar-teal" viewBox="0 0 11 11" refX="10" refY="5.5" markerWidth="11" markerHeight="11" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L11,5.5 L0,11 Z" fill="#3a8f9a"/></marker>
+    <marker id="ar-amber" viewBox="0 0 11 11" refX="10" refY="5.5" markerWidth="11" markerHeight="11" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L11,5.5 L0,11 Z" fill="#c98a2b"/></marker>
+    <marker id="ar-purple" viewBox="0 0 11 11" refX="10" refY="5.5" markerWidth="11" markerHeight="11" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L11,5.5 L0,11 Z" fill="#7c5cb8"/></marker>
+    <marker id="ar-red" viewBox="0 0 11 11" refX="10" refY="5.5" markerWidth="9" markerHeight="9" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L11,5.5 L0,11 Z" fill="#c0392b"/></marker>
+    <style>
+      .ptitle{font-size:15px;font-weight:600;fill:#fff}
+      .tag{font-size:10.5px;fill:#fff;opacity:.92}
+      .gtitle{font-size:13px;font-weight:700}
+      .item{font-size:11.5px;fill:#3d4d60}
+      .cls{font-weight:700;fill:#27313f}
+      .note{font-size:10.5px;fill:#738295}
+      .badge-txt{font-size:12px;font-weight:700;fill:#fff}
+      .flow-txt{font-size:11.5px;font-weight:600}
+      .flow-sub{font-size:10.5px;fill:#738295;font-weight:400}
+      .legend-txt{font-size:11.5px;fill:#3a4a5e}
+      .db-txt{font-size:11px;fill:#5a4a2a}
+      .title{font-size:28px;font-weight:700;fill:#243140}
+      .sub{font-size:13px;fill:#6b7a8d}
+    </style>
+  </defs>
+
+  <!-- background -->
+  <rect width="1480" height="1080" fill="url(#bg)"/>
+
+  <!-- title -->
+  <text x="740" y="46" text-anchor="middle" class="title">XXL-JOB 2.4.0 整体架构图</text>
+  <text x="740" y="70" text-anchor="middle" class="sub">分布式任务调度平台  ·  Distributed Task Scheduling Platform</text>
+
+  <!-- ===================== 调度中心 ADMIN ===================== -->
+  <g id="admin">
+    <rect x="40" y="95" width="450" height="710" rx="12" fill="#eaf1fb" stroke="#3b6fb5" stroke-width="1.5" filter="url(#shadow)"/>
+    <path d="M40,107 Q40,95 52,95 L478,95 Q490,95 490,107 L490,139 L40,139 Z" fill="url(#adminH)"/>
+    <text x="60" y="122" class="ptitle">调度中心  ·  xxl-job-admin</text>
+    <text x="470" y="122" text-anchor="end" class="tag">Spring Boot · 集群部署</text>
+
+    <!-- A: Web 控制层 -->
+    <rect x="54" y="149" width="422" height="129" rx="8" fill="#f5f8fe" stroke="#a7c0dc" stroke-width="1" filter="url(#soft)"/>
+    <text x="68" y="170" class="gtitle" fill="#2c5a96">Web 控制层  ·  RESTful API</text>
+    <line x1="68" y1="177" x2="462" y2="177" stroke="#3b6fb5" stroke-opacity="0.25"/>
+    <text x="68" y="195" class="item"><tspan class="cls">IndexController</tspan> — 控制台首页 / 运行报表</text>
+    <text x="68" y="212" class="item"><tspan class="cls">JobInfoController</tspan> — 任务管理 (CRUD)</text>
+    <text x="68" y="229" class="item"><tspan class="cls">JobGroupController</tspan> — 执行器分组管理</text>
+    <text x="68" y="246" class="item"><tspan class="cls">JobLogController</tspan> — 调度日志查看</text>
+    <text x="68" y="263" class="item"><tspan class="cls">JobApiController</tspan> — RESTful 开放接口</text>
+
+    <!-- B: 调度核心 -->
+    <rect x="54" y="288" width="422" height="112" rx="8" fill="#f5f8fe" stroke="#a7c0dc" stroke-width="1" filter="url(#soft)"/>
+    <text x="68" y="309" class="gtitle" fill="#2c5a96">调度核心  ·  Scheduler</text>
+    <line x1="68" y1="316" x2="462" y2="316" stroke="#3b6fb5" stroke-opacity="0.25"/>
+    <text x="68" y="334" class="item"><tspan class="cls">XxlJobScheduler</tspan> — 统一初始化入口</text>
+    <text x="68" y="351" class="item"><tspan class="cls">JobScheduleHelper</tspan> — 调度线程 + 时间环 (5s 预读)</text>
+    <text x="68" y="368" class="item"><tspan class="cls">JobTriggerPoolHelper</tspan> — 快 / 慢触发线程池</text>
+    <text x="68" y="385" class="item"><tspan class="cls">XxlJobTrigger</tspan> — 路由 + 落日志 + 下发触发</text>
+
+    <!-- C: 路由策略 -->
+    <rect x="54" y="410" width="422" height="146" rx="8" fill="#f5f8fe" stroke="#a7c0dc" stroke-width="1" filter="url(#soft)"/>
+    <text x="68" y="431" class="gtitle" fill="#2c5a96">路由策略  ·  Router (9 + 分片广播)</text>
+    <line x1="68" y1="438" x2="462" y2="438" stroke="#3b6fb5" stroke-opacity="0.25"/>
+    <text x="68" y="456" class="item"><tspan class="cls">FIRST / LAST</tspan> — 第一个 / 最后一个</text>
+    <text x="68" y="473" class="item"><tspan class="cls">ROUND / RANDOM</tspan> — 轮询 / 随机</text>
+    <text x="68" y="490" class="item"><tspan class="cls">LFU / LRU</tspan> — 最少使用 / 最久未用</text>
+    <text x="68" y="507" class="item"><tspan class="cls">CONSISTENT_HASH</tspan> — 一致性哈希</text>
+    <text x="68" y="524" class="item"><tspan class="cls">FAILOVER / BUSYOVER</tspan> — 故障 / 忙碌转移</text>
+    <text x="68" y="541" class="item"><tspan class="cls">SHARDING_BROADCAST</tspan> — 分片广播任务</text>
+
+    <!-- D: 注册与监控 -->
+    <rect x="54" y="566" width="422" height="112" rx="8" fill="#f5f8fe" stroke="#a7c0dc" stroke-width="1" filter="url(#soft)"/>
+    <text x="68" y="587" class="gtitle" fill="#2c5a96">注册与监控  ·  Monitor</text>
+    <line x1="68" y1="594" x2="462" y2="594" stroke="#3b6fb5" stroke-opacity="0.25"/>
+    <text x="68" y="612" class="item"><tspan class="cls">JobRegistryHelper</tspan> — 注册监控 / 剔除死节点</text>
+    <text x="68" y="629" class="item"><tspan class="cls">JobCompleteHelper</tspan> — 结果回调 / 丢失检测</text>
+    <text x="68" y="646" class="item"><tspan class="cls">JobFailMonitorHelper</tspan> — 失败重试 + 报警</text>
+    <text x="68" y="663" class="item"><tspan class="cls">JobLogReportHelper</tspan> — 调度报表统计</text>
+
+    <!-- E: 策略与报警 -->
+    <rect x="54" y="688" width="422" height="95" rx="8" fill="#f5f8fe" stroke="#a7c0dc" stroke-width="1" filter="url(#soft)"/>
+    <text x="68" y="709" class="gtitle" fill="#2c5a96">策略与报警  ·  Strategy</text>
+    <line x1="68" y1="716" x2="462" y2="716" stroke="#3b6fb5" stroke-opacity="0.25"/>
+    <text x="68" y="734" class="item"><tspan class="cls">MisfireStrategy</tspan> — 过期策略 (忽略 / 立即补偿)</text>
+    <text x="68" y="751" class="item"><tspan class="cls">BlockStrategy</tspan> — 阻塞策略 (串行 / 丢弃 / 覆盖)</text>
+    <text x="68" y="768" class="item"><tspan class="cls">EmailJobAlarm</tspan> — 邮件报警通知</text>
+
+    <!-- ⑥ internal alarm arrow D -> E -->
+    <path d="M64,624 C44,660 44,712 64,742" fill="none" stroke="#c0392b" stroke-width="1.6" stroke-dasharray="4,3" marker-end="url(#ar-red)"/>
+    <circle cx="56" cy="683" r="11" fill="#c0392b"/>
+    <text x="56" y="683" text-anchor="middle" dominant-baseline="central" class="badge-txt">6</text>
+    <text x="78" y="687" class="flow-txt" fill="#c0392b">失败报警</text>
+  </g>
+
+  <!-- ===================== 执行器 EXECUTOR ===================== -->
+  <g id="exec">
+    <rect x="990" y="95" width="450" height="710" rx="12" fill="#e9f7f0" stroke="#2f9e6b" stroke-width="1.5" filter="url(#shadow)"/>
+    <path d="M990,107 Q990,95 1002,95 L1428,95 Q1440,95 1440,107 L1440,139 L990,139 Z" fill="url(#execH)"/>
+    <text x="1010" y="122" class="ptitle">执行器  ·  xxl-job-executor + xxl-job-core</text>
+    <text x="1420" y="122" text-anchor="end" class="tag">Netty · 集群部署</text>
+
+    <!-- A: 执行器入口 -->
+    <rect x="1004" y="155" width="422" height="78" rx="8" fill="#f4faf7" stroke="#a7d3bc" stroke-width="1" filter="url(#soft)"/>
+    <text x="1018" y="176" class="gtitle" fill="#237a52">执行器入口  ·  Entry</text>
+    <line x1="1018" y1="183" x2="1412" y2="183" stroke="#2f9e6b" stroke-opacity="0.25"/>
+    <text x="1018" y="201" class="item"><tspan class="cls">XxlJobSpringExecutor</tspan> — Spring 容器集成</text>
+    <text x="1018" y="218" class="item"><tspan class="cls">@XxlJob</tspan> — 注解扫描注册 Handler</text>
+
+    <!-- B: RPC 服务端 -->
+    <rect x="1004" y="249" width="422" height="78" rx="8" fill="#f4faf7" stroke="#a7d3bc" stroke-width="1" filter="url(#soft)"/>
+    <text x="1018" y="270" class="gtitle" fill="#237a52">RPC 服务端  ·  Provider</text>
+    <line x1="1018" y1="277" x2="1412" y2="277" stroke="#2f9e6b" stroke-opacity="0.25"/>
+    <text x="1018" y="295" class="item"><tspan class="cls">EmbedServer</tspan> — Netty HTTP 内嵌服务</text>
+    <text x="1018" y="312" class="item"><tspan class="cls">ExecutorBizImpl</tspan> — run / beat / kill / log</text>
+
+    <!-- C: 任务执行 -->
+    <rect x="1004" y="343" width="422" height="112" rx="8" fill="#f4faf7" stroke="#a7d3bc" stroke-width="1" filter="url(#soft)"/>
+    <text x="1018" y="364" class="gtitle" fill="#237a52">任务执行  ·  Execution</text>
+    <line x1="1018" y1="371" x2="1412" y2="371" stroke="#2f9e6b" stroke-opacity="0.25"/>
+    <text x="1018" y="389" class="item"><tspan class="cls">JobThread</tspan> — 每 JobId 独立线程</text>
+    <text x="1018" y="406" class="item"><tspan class="cls">triggerQueue</tspan> — 触发队列 (串行 / 阻塞)</text>
+    <text x="1018" y="423" class="item"><tspan class="cls">IJobHandler</tspan> — BEAN / GLUE_GROOVY / SHELL</text>
+    <text x="1018" y="440" class="item"><tspan class="cls">GlueFactory</tspan> — Groovy 动态编译</text>
+    <!-- ③ internal execution arrow JobThread -> IJobHandler -->
+    <line x1="1392" y1="394" x2="1392" y2="414" stroke="#7c5cb8" stroke-width="2.4" marker-end="url(#ar-purple)"/>
+    <circle cx="1392" cy="362" r="11" fill="#7c5cb8"/>
+    <text x="1392" y="362" text-anchor="middle" dominant-baseline="central" class="badge-txt">3</text>
+    <text x="1378" y="408" text-anchor="end" class="flow-txt" fill="#7c5cb8">执行 ↓</text>
+
+    <!-- D: 异步线程 -->
+    <rect x="1004" y="471" width="422" height="95" rx="8" fill="#f4faf7" stroke="#a7d3bc" stroke-width="1" filter="url(#soft)"/>
+    <text x="1018" y="492" class="gtitle" fill="#237a52">异步线程  ·  Async</text>
+    <line x1="1018" y1="499" x2="1412" y2="499" stroke="#2f9e6b" stroke-opacity="0.25"/>
+    <text x="1018" y="517" class="item"><tspan class="cls">ExecutorRegistryThread</tspan> — 周期注册 → 中心</text>
+    <text x="1018" y="534" class="item"><tspan class="cls">TriggerCallbackThread</tspan> — 回调队列 → 中心</text>
+    <text x="1018" y="551" class="item"><tspan class="cls">JobLogFileCleanThread</tspan> — 过期日志清理</text>
+
+    <!-- E: 日志 -->
+    <rect x="1004" y="582" width="422" height="78" rx="8" fill="#f4faf7" stroke="#a7d3bc" stroke-width="1" filter="url(#soft)"/>
+    <text x="1018" y="603" class="gtitle" fill="#237a52">日志  ·  Log</text>
+    <line x1="1018" y1="610" x2="1412" y2="610" stroke="#2f9e6b" stroke-opacity="0.25"/>
+    <text x="1018" y="628" class="item"><tspan class="cls">XxlJobFileAppender</tspan> — Rolling 实时日志</text>
+    <text x="1018" y="645" class="item"><tspan class="cls">本地日志文件</tspan> — ⑤ 回传调度中心</text>
+
+    <!-- F: 部署形态 -->
+    <rect x="1004" y="676" width="422" height="95" rx="8" fill="#f4faf7" stroke="#a7d3bc" stroke-width="1" filter="url(#soft)"/>
+    <text x="1018" y="697" class="gtitle" fill="#237a52">部署形态  ·  Deployment</text>
+    <line x1="1018" y1="704" x2="1412" y2="704" stroke="#2f9e6b" stroke-opacity="0.25"/>
+    <text x="1018" y="722" class="item"><tspan class="cls">Spring Boot 集成</tspan> — XxlJobConfig</text>
+    <text x="1018" y="739" class="item"><tspan class="cls">Frameless</tspan> — 无框架启动</text>
+    <text x="1018" y="756" class="item"><tspan class="cls">跨语言 RESTful</tspan> — httpJobHandler</text>
+  </g>
+
+  <!-- ===================== 中部通信流 (admin <-> exec) ===================== -->
+  <g id="flows">
+    <!-- ① 注册: exec -> admin -->
+    <text x="740" y="200" text-anchor="middle" class="flow-txt" fill="#2f9e6b">① 执行器周期注册 (appname + address)</text>
+    <text x="740" y="216" text-anchor="middle" class="flow-sub">→ 写入 xxl_job_registry</text>
+    <line x1="985" y1="232" x2="502" y2="232" stroke="#2f9e6b" stroke-width="2.5" marker-end="url(#ar-green)"/>
+    <circle cx="740" cy="232" r="13" fill="#2f9e6b" stroke="#fff" stroke-width="2"/>
+    <text x="740" y="232" text-anchor="middle" dominant-baseline="central" class="badge-txt">1</text>
+
+    <!-- ② 触发: admin -> exec -->
+    <text x="740" y="333" text-anchor="middle" class="flow-txt" fill="#3b6fb5">② 任务触发下发</text>
+    <text x="740" y="349" text-anchor="middle" class="flow-sub">ExecutorBiz.run() · HTTP</text>
+    <line x1="495" y1="365" x2="978" y2="365" stroke="#3b6fb5" stroke-width="2.5" marker-end="url(#ar-blue)"/>
+    <circle cx="740" cy="365" r="13" fill="#3b6fb5" stroke="#fff" stroke-width="2"/>
+    <text x="740" y="365" text-anchor="middle" dominant-baseline="central" class="badge-txt">2</text>
+
+    <!-- ④ 回调: exec -> admin -->
+    <text x="740" y="468" text-anchor="middle" class="flow-txt" fill="#d97757">④ 执行结果回调</text>
+    <text x="740" y="484" text-anchor="middle" class="flow-sub">AdminBiz.callback() → xxl_job_log</text>
+    <line x1="985" y1="500" x2="502" y2="500" stroke="#d97757" stroke-width="2.5" marker-end="url(#ar-orange)"/>
+    <circle cx="740" cy="500" r="13" fill="#d97757" stroke="#fff" stroke-width="2"/>
+    <text x="740" y="500" text-anchor="middle" dominant-baseline="central" class="badge-txt">4</text>
+
+    <!-- ⑤ 日志拉取: exec -> admin -->
+    <text x="740" y="603" text-anchor="middle" class="flow-txt" fill="#3a8f9a">⑤ 调度日志拉取 (Rolling)</text>
+    <text x="740" y="619" text-anchor="middle" class="flow-sub">ExecutorBiz.log() · 在线查看</text>
+    <line x1="985" y1="635" x2="502" y2="635" stroke="#3a8f9a" stroke-width="2.5" marker-end="url(#ar-teal)"/>
+    <circle cx="740" cy="635" r="13" fill="#3a8f9a" stroke="#fff" stroke-width="2"/>
+    <text x="740" y="635" text-anchor="middle" dominant-baseline="central" class="badge-txt">5</text>
+  </g>
+
+  <!-- ===================== MySQL 数据库 ===================== -->
+  <g id="db">
+    <!-- connector admin -> db -->
+    <path d="M265,805 L265,821 L740,821 L740,828" fill="none" stroke="#c98a2b" stroke-width="2" marker-end="url(#ar-amber)"/>
+    <text x="502" y="815" text-anchor="middle" class="db-txt">DB 行锁 schedule_lock 保证集群一致性 · 配置 / 日志 / 注册表读写</text>
+
+    <rect x="540" y="830" width="400" height="150" rx="12" fill="#fdf3e3" stroke="#c98a2b" stroke-width="1.5" filter="url(#shadow)"/>
+    <path d="M540,842 Q540,830 552,830 L928,830 Q940,830 940,842 L940,866 L540,866 Z" fill="url(#dbH)"/>
+    <text x="556" y="853" class="ptitle">MySQL 数据库</text>
+    <text x="926" y="853" text-anchor="end" class="tag">调度中心共享</text>
+
+    <text x="560" y="887" class="item"><tspan class="cls">xxl_job_info</tspan> 任务配置</text>
+    <text x="760" y="887" class="item"><tspan class="cls">xxl_job_registry</tspan> 注册表</text>
+    <text x="560" y="908" class="item"><tspan class="cls">xxl_job_log</tspan> 调度日志</text>
+    <text x="760" y="908" class="item"><tspan class="cls">xxl_job_group</tspan> 执行器组</text>
+    <text x="560" y="929" class="item"><tspan class="cls">xxl_job_log_report</tspan> 报表</text>
+    <text x="760" y="929" class="item"><tspan class="cls">xxl_job_lock</tspan> 分布式锁</text>
+    <text x="560" y="950" class="item"><tspan class="cls">xxl_job_logglue</tspan> GLUE 代码</text>
+    <text x="760" y="950" class="item"><tspan class="cls">xxl_job_user</tspan> 用户权限</text>
+  </g>
+
+  <!-- ===================== 图例 Legend ===================== -->
+  <g id="legend">
+    <rect x="40" y="1000" width="1400" height="56" rx="10" fill="#ffffff" stroke="#d4dde9" stroke-width="1" filter="url(#soft)"/>
+    <text x="58" y="1020" class="gtitle" fill="#243140">通信流程</text>
+    <line x1="58" y1="1027" x2="170" y2="1027" stroke="#243140" stroke-opacity="0.2"/>
+
+    <!-- item 1 -->
+    <circle cx="78" cy="1043" r="10" fill="#2f9e6b"/><text x="78" y="1043" text-anchor="middle" dominant-baseline="central" class="badge-txt">1</text>
+    <text x="94" y="1047" class="legend-txt">执行器周期注册</text>
+    <!-- item 2 -->
+    <circle cx="298" cy="1043" r="10" fill="#3b6fb5"/><text x="298" y="1043" text-anchor="middle" dominant-baseline="central" class="badge-txt">2</text>
+    <text x="314" y="1047" class="legend-txt">任务触发下发</text>
+    <!-- item 3 -->
+    <circle cx="518" cy="1043" r="10" fill="#7c5cb8"/><text x="518" y="1043" text-anchor="middle" dominant-baseline="central" class="badge-txt">3</text>
+    <text x="534" y="1047" class="legend-txt">任务内部执行</text>
+    <!-- item 4 -->
+    <circle cx="738" cy="1043" r="10" fill="#d97757"/><text x="738" y="1043" text-anchor="middle" dominant-baseline="central" class="badge-txt">4</text>
+    <text x="754" y="1047" class="legend-txt">执行结果回调</text>
+    <!-- item 5 -->
+    <circle cx="958" cy="1043" r="10" fill="#3a8f9a"/><text x="958" y="1043" text-anchor="middle" dominant-baseline="central" class="badge-txt">5</text>
+    <text x="974" y="1047" class="legend-txt">调度日志拉取</text>
+    <!-- item 6 -->
+    <circle cx="1178" cy="1043" r="10" fill="#c0392b"/><text x="1178" y="1043" text-anchor="middle" dominant-baseline="central" class="badge-txt">6</text>
+    <text x="1194" y="1047" class="legend-txt">失败重试与报警</text>
+    <!-- db link -->
+    <rect x="1330" y="1037" width="8" height="12" rx="2" fill="#c98a2b"/>
+    <text x="1346" y="1047" class="legend-txt">DB 读写 / 锁</text>
+  </g>
+</svg>
