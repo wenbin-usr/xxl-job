@@ -5,6 +5,7 @@ import com.xxl.job.core.handler.annotation.XxlJob;
 import com.xxl.tool.core.StringTool;
 import com.xxl.tool.json.GsonTool;
 import com.xxl.tool.http.HttpTool;
+import com.xxl.tool.http.http.HttpRequest;
 import com.xxl.tool.http.http.HttpResponse;
 import com.xxl.tool.http.http.enums.ContentType;
 import com.xxl.tool.http.http.enums.Method;
@@ -164,7 +165,7 @@ public class SampleXxlJob {
      *          "form": {
      *              "key01": "value01"
      *          },
-     *          "auth": "auth data"
+     *          "auth": "bearer token"
      *      }
      *  </pre>
      */
@@ -231,16 +232,19 @@ public class SampleXxlJob {
 
         // do request
         try {
-            HttpResponse httpResponse = HttpTool.createRequest()
+            HttpRequest httpRequest = HttpTool.createRequest()
                     .url(httpJobParam.getUrl())
                     .method(method)
                     .contentType(contentType)
                     .header(httpJobParam.getHeaders())
                     .cookie(httpJobParam.getCookies())
                     .body(httpJobParam.getData())
-                    .form(httpJobParam.getForm())
-                    .auth(httpJobParam.getAuth())
-                    .execute();
+                    .form(httpJobParam.getForm());
+            // Bearer Token（Authorization: Bearer xxx）
+            if (StringTool.isNotBlank(httpJobParam.getAuth())) {
+                httpRequest.bearerAuth(httpJobParam.getAuth());
+            }
+            HttpResponse httpResponse = httpRequest.execute();
 
             XxlJobHelper.log("StatusCode: " + httpResponse.statusCode());
             XxlJobHelper.log("Response: <br>" + httpResponse.response());
@@ -283,7 +287,7 @@ public class SampleXxlJob {
         httpJobParam.setTimeout(3000);
         httpJobParam.setData("request body data");
         httpJobParam.setForm(Map.of("form01", "value01"));
-        httpJobParam.setAuth("auth data");
+        httpJobParam.setAuth("bearer token");
 
         logger.info(GsonTool.toJson(httpJobParam));
     }*/
@@ -300,7 +304,7 @@ public class SampleXxlJob {
         private int timeout;                                    // 请求超时时间
         private String data;                                    // 存储请求体
         private Map<String, String> form;                       // 存储表单数据
-        private String auth;                                    // 鉴权信息
+        private String auth;                                    // 鉴权信息（Bearer Token）
 
         public String getUrl() {
             return url;

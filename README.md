@@ -56,6 +56,16 @@ XXL-JOB 是一个开源且免费项目，其正在进行的开发完全得益于
             <span style="text-decoration:underline;color: #E6BE8A;" >阿里云 提供云上托管 XXL-JOB</span>
         </a>
     </td>
+    <td>
+        <a href="https://www.mall4j.com/cn/?statId=10" title="" target="_blank" >
+            <img width="150px" src="http://www.xuxueli.com/page/static/images/logo_mail4j.png" >
+        </a>
+    </td>
+    <td>
+        <a href="https://www.oudianyun.com/?source=x" title="" target="_blank" >
+            <img width="150px" src="http://www.xuxueli.com/page/static/images/logo_ody.png" >
+        </a>
+    </td>
 </tr>
 </table>
 <!-- supporter end -->
@@ -869,9 +879,13 @@ XXL-JOB 是一个开源且免费项目，其正在进行的开发完全得益于
     - 718、广州串联网络科技有限公司
     - 719、上海乐研化学试剂
     - 720、智现未来
-    - 721、大庆点神科技有限公司
-    - 722、深圳市中科环球科技有限公司
-    - 723、江苏金箭车业制造有限公司
+    - 721、深圳市中科环球科技有限公司
+    - 722、江苏金箭车业制造有限公司
+    - 723、友邦保险
+    - 725、鸿海精密工业股份有限公司
+    - 726、芽儿网络科技（福州市台江区）有限责任公司
+    - 728、车团科技（深圳）有限公司
+    - 729、深圳湛信科技有限公司
     - ……
 
 > 更多接入的公司，欢迎在 [登记地址](https://github.com/xuxueli/xxl-job/issues/1 ) 登记，登记仅仅为了产品推广。
